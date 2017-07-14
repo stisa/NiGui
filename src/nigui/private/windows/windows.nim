@@ -24,6 +24,7 @@
 {.pragma: libShell32, stdcall, dynlib: "Shell32.dll".}
 {.pragma: libGdiplus, stdcall, dynlib: "Gdiplus.dll".}
 {.pragma: libComdlg32, stdcall, dynlib: "Comdlg32.dll".}
+{.pragma: libOpenGL32, stdcall, dynlib: "OpenGL32.dll".}
 
 
 # ----------------------------------------------------------------------------------------
@@ -134,6 +135,10 @@ const
   # WS_EX_TOOLWINDOW* = 0x00000080
   OPAQUE* = 2
   TRANSPARENT* = 1
+  PFD_DRAW_TO_WINDOW* = 4
+  PFD_SUPPORT_OPENGL* = 32
+  PFD_DOUBLEBUFFER* = 1
+  PFD_TYPE_RGBA* = 0
   PS_SOLID* = 0
   PS_DASH* = 1
   PS_DOT* = 2
@@ -280,6 +285,33 @@ type
     Data3*: int32
     Data4*: int32
 
+  PixelFormatDescriptor* = object
+    nSize*: int16
+    nVersion*: int16
+    dwFlags*: int32
+    iPixelType*: byte
+    cColorBits*: byte
+    cRedBits*: byte
+    cRedShift*: byte
+    cGreenBits*: byte
+    cGreenShift*: byte
+    cBlueBits*: byte
+    cBlueShift*: byte
+    cAlphaBits*: byte
+    cAlphaShift*: byte
+    cAccumBits*: byte
+    cAccumRedBits*: byte
+    cAccumGreenBits*: byte
+    cAccumBlueBits*: byte
+    cAccumAlphaBits*: byte
+    cDepthBits*: byte
+    cStencilBits*: byte
+    cAuxBuffers*: byte
+    iLayerType*: byte
+    bReserved*: byte
+    dwLayerMask*: int32
+    dwVisibleMask*: int32
+    dwDamageMask*: int32
 
 # ----------------------------------------------------------------------------------------
 #                               Replacement for Windows Macros
@@ -403,7 +435,9 @@ proc LineTo*(hdc: pointer, nXEnd, nYEnd: int): bool {.importc: "LineTo", libGdi3
 proc CreateCompatibleDC*(hdc: pointer): pointer {.importc: "CreateCompatibleDC", libGdi32.}
 proc SetPixel*(hdc: pointer, x, y: int32, crColor: RGB32): int32 {.importc: "SetPixel", libGdi32.}
 # proc BitBlt*(hdcDest: pointer, nXDest, nYDest, nWidth, nHeight: int32, hdcSrc: pointer, nXSrc, nYSrc, dwRop: int32): bool {.importc: "BitBlt", libGdi32.}
-
+proc ChoosePixelFormat*(hdc: pointer, pfd: ptr PixelFormatDescriptor ): int32 {.importc: "ChoosePixelFormat", libGdi32.}
+proc SetPixelFormat*(hdc: pointer, ipfd: int32, pfd: ptr PixelFormatDescriptor ): bool {.importc: "SetPixelFormat", libGdi32.}
+proc SwapBuffers*(hdc: pointer): bool {.importc: "SwapBuffers", libGdi32, discardable.}
 
 # ----------------------------------------------------------------------------------------
 #                                       GDI+ Procs
@@ -458,3 +492,11 @@ proc CommDlgExtendedError*(): int32 {.importc: "CommDlgExtendedError", libComdlg
 proc GetOpenFileNameW*(lpofn: var OpenFileName): bool {.importc: "GetOpenFileNameW", libComdlg32.}
 proc GetSaveFileNameW*(lpofn: var OpenFileName): bool {.importc: "GetSaveFileNameW", libComdlg32.}
 
+# ----------------------------------------------------------------------------------------
+#                                       WGL Procs
+# ----------------------------------------------------------------------------------------
+proc wglCreateContext*(hdc: pointer): pointer {.importc: "wglCreateContext", libOpenGL32.}
+proc wglDeleteContext*(hglrc: pointer): bool  {.importc: "wglDeleteContext", libOpenGL32.}
+proc wglGetCurrentContext*(): pointer  {.importc: "wglGetCurrentContext", libOpenGL32.}
+proc wglGetCurrentDC*(): pointer {.importc: "wglGetCurrentDC", libOpenGL32.}
+proc wglMakeCurrent*(hdc: pointer, hglrc: pointer): bool  {.importc: "wglMakeCurrent", libOpenGL32.}

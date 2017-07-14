@@ -21,3 +21,5 @@ type
     fAreaBrush: pointer
 
   ImageImpl* = ref object of Image
+
+  GLImpl* = ref object of Control

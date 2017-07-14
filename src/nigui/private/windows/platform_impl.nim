@@ -1288,3 +1288,50 @@ method `wrap=`(textArea: NativeTextArea, wrap: bool) =
   # It seems that this is not possible.
   # Word wrap depends on whether dwStyle contains WS_HSCROLL at window creation.
   # Changing the style later has not the wanted effect.
+
+#
+# GL Context
+#
+
+proc newGL*():GLImpl =
+  cast[GLImpl](newControl())
+
+proc add*(window:Window, gl:GLImpl) =
+  if window.control != nil:
+    raiseError("Window can have only one control.")
+  window.control = gl
+
+  var 
+    hdc = GetDC(window.WindowImpl.fHandle)
+
+    pfd = PIXELFORMATDESCRIPTOR(
+      nSize: sizeof(PixelFormatDescriptor).int16,
+      nVersion: 1,
+      dwFlags: PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER,
+      iPixelType: PFD_TYPE_RGBA,
+      cColorBits: 32,
+      cDepthBits: 16,
+      iLayerType: 0
+    )
+
+    pf = ChoosePixelFormat(hdc, addr pfd)
+  
+  if not SetPixelFormat(hdc,pf, addr pfd):
+    echo "Error SetPixelFormat"
+  
+  var glCtx = wglCreateContext(hdc)
+  
+  if not wglMakeCurrent(hdc, glCtx):
+    echo "Error wglMakeCurrent"
+
+proc swapBuffers*() =
+  if not Swapbuffers(wglGetCurrentDC()):
+    echo "Error SwapBuffers: ", GetLastError()
+
+method destroy*(gl: GLImpl) =
+  if not wglDeleteContext(wglGetCurrentContext()):
+    echo "Error wglDeleteContext"
+  procCall gl.Control.destroy()
+  if gl.canvas != nil:
+    gl.canvas.destroy()
+  #pDestroyWindow(gl.fHandle)  

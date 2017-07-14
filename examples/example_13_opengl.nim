@@ -1,20 +1,19 @@
-# This example shows the basic use of the NiGui toolkit.
+# This example shows how to open an opengl context
 
-import ../src/nigui
-# First, import the library.
+import nigui
+
 import opengl
 
 app.init()
-# Initialization is mandatory.
 
-var window = newWindow("NiGui Example")
+var window = newWindow("NiGui OpenGL Example")
 
 window.width = 600
 window.height = 400
 
-# Create the control that holds the context
+# Create the control that we will use to handle events
 var gl = window.initGL()
-# Initialize and add the context to the window
+# Add the control to the window
 window.add(gl)
 
 loadExtensions()

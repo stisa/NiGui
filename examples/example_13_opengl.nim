@@ -13,7 +13,7 @@ window.width = 600
 window.height = 400
 
 # Create the control that holds the context
-var gl = newGL()
+var gl = window.initGL()
 # Initialize and add the context to the window
 window.add(gl)
 

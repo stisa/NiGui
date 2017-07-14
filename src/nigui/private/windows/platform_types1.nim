@@ -6,6 +6,7 @@ type
   WindowImpl* = ref object of Window
     fHandle: pointer
     fModalParent: WindowImpl
+    hasGL: bool
 
   ControlImpl* = ref object of Control
     fHandle: pointer
@@ -21,5 +22,4 @@ type
     fAreaBrush: pointer
 
   ImageImpl* = ref object of Image
-
-  GLImpl* = ref object of Control
+  

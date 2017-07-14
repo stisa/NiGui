@@ -743,12 +743,12 @@ proc initGL*(window: Window, colorBits: int = 32, depthBits: int = 16): Control 
     pf = ChoosePixelFormat(hdc, addr pfd)
   
   if not SetPixelFormat(hdc,pf, addr pfd):
-    echo "Error SetPixelFormat"
+    raiseError("Error SetPixelFormat")
   
   var glCtx = wglCreateContext(hdc)
   
   if not wglMakeCurrent(hdc, glCtx):
-    echo "Error wglMakeCurrent"
+    raiseError("Error wglMakeCurrent")
   
   window.WindowImpl.hasGL = true
 
@@ -756,7 +756,7 @@ proc initGL*(window: Window, colorBits: int = 32, depthBits: int = 16): Control 
 
 proc swapBuffers*() =
   if not Swapbuffers(wglGetCurrentDC()):
-    echo "Error SwapBuffers: ", GetLastError()
+    raiseError("Error SwapBuffers: " & $GetLastError())
 
 proc init(window: WindowImpl) =
   var dwStyle: int32 = WS_OVERLAPPEDWINDOW
@@ -767,7 +767,7 @@ proc init(window: WindowImpl) =
 method destroy(window: WindowImpl) =  
   if window.hasGL:
     if not wglDeleteContext(wglGetCurrentContext()):
-      echo "Error wglDeleteContext"
+      raiseError("Error wglDeleteContext")
     window.hasGL = false
   if window.fModalParent != nil:
     discard EnableWindow(window.fModalParent.fHandle, true)

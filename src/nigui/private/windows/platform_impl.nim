@@ -726,7 +726,7 @@ method saveToJpegFile(image: Image, filePath: string, quality = 80) =
 #                                        Window
 # ----------------------------------------------------------------------------------------
   
-proc initGL*(window: Window) : Control =
+proc initGL*(window: Window, colorBits: int = 32, depthBits: int = 16): Control =
   if window.WindowImpl.hasGL: return
   var 
     hdc = GetDC(window.WindowImpl.fHandle)
@@ -736,9 +736,8 @@ proc initGL*(window: Window) : Control =
       nVersion: 1,
       dwFlags: PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL or PFD_DOUBLEBUFFER,
       iPixelType: PFD_TYPE_RGBA,
-      cColorBits: 32,
-      cDepthBits: 16,
-      iLayerType: 0
+      cColorBits: colorBits.byte,
+      cDepthBits: depthBits.byte
     )
 
     pf = ChoosePixelFormat(hdc, addr pfd)

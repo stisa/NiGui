@@ -619,6 +619,17 @@ proc pMainScrollbarDraw(widget: pointer, cr: pointer, data: pointer): bool {.cde
     gtk_scrolled_window_set_policy(widget, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
     fScrollbarSize = allocation.height
 
+proc initGL*(window: Window, colorBits: int = 32, depthBits: int = 16): Control =
+  if window.fHasGL: return
+
+  var glctx = gtk_gl_area_new()
+  gtk_gl_area_make_current(glctx)
+  window.fHasGL = true
+
+  newControl()
+
+proc swapBuffers*() = discard # No Op
+
 proc init(window: WindowImpl) =
   window.fHandle = gtk_window_new(GTK_WINDOW_TOPLEVEL)
   window.fInnerHandle = gtk_scrolled_window_new(nil, nil)

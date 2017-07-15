@@ -6,7 +6,6 @@ type
   WindowImpl* = ref object of Window
     fHandle: pointer
     fModalParent: WindowImpl
-    hasGL: bool
 
   ControlImpl* = ref object of Control
     fHandle: pointer

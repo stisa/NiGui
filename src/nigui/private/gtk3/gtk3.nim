@@ -248,6 +248,9 @@ proc gtk_container_set_border_width*(container: pointer, width: cint) {.importc:
 proc gtk_fixed_new*(): pointer {.importc: "gtk_fixed_new", libgtk3.}
 proc gtk_fixed_move*(fixed, widget: pointer, x, y: cint) {.importc: "gtk_fixed_move", libgtk3.}
 
+proc gtk_gl_area_new*() : pointer {.importc: "gtk_gl_area_new", libgtk3.}
+proc gtk_gl_area_make_current*(area:pointer) {.importc: "gtk_gl_area_make_current", libgtk3.}
+
 proc gtk_layout_new*(hadjustment, vadjustment: pointer): pointer {.importc: "gtk_layout_new", libgtk3.}
 # proc gtk_layout_put*(layout, child_widget: pointer, x, y: cint) {.importc: "gtk_layout_put", libgtk3.}
 proc gtk_layout_move*(layout, child_widget: pointer, x, y: cint) {.importc: "gtk_layout_move", libgtk3.}

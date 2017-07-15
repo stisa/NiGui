@@ -143,6 +143,7 @@ type
     fOnResize: ResizeProc
     fOnDropFiles: DropFilesProc
     fOnKeyDown: WindowKeyProc
+    fHasGL: bool
 
   # Control base type:
 

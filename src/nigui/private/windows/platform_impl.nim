@@ -727,7 +727,7 @@ method saveToJpegFile(image: Image, filePath: string, quality = 80) =
 # ----------------------------------------------------------------------------------------
   
 proc initGL*(window: Window, colorBits: int = 32, depthBits: int = 16): Control =
-  if window.WindowImpl.hasGL: return
+  if window.fHasGL: return
   var 
     hdc = GetDC(window.WindowImpl.fHandle)
 
@@ -750,7 +750,7 @@ proc initGL*(window: Window, colorBits: int = 32, depthBits: int = 16): Control 
   if not wglMakeCurrent(hdc, glCtx):
     raiseError("Error wglMakeCurrent")
   
-  window.WindowImpl.hasGL = true
+  window.fHasGL = true
 
   newControl()
 
@@ -765,10 +765,10 @@ proc init(window: WindowImpl) =
   window.Window.init()
 
 method destroy(window: WindowImpl) =  
-  if window.hasGL:
+  if window.fHasGL:
     if not wglDeleteContext(wglGetCurrentContext()):
       raiseError("Error wglDeleteContext")
-    window.hasGL = false
+    window.fHasGL = false
   if window.fModalParent != nil:
     discard EnableWindow(window.fModalParent.fHandle, true)
   procCall window.Window.destroy()
